@@ -6,11 +6,14 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import Assets from '~assets';
 import {ButtonField, Gap, Phrase} from '~components/atoms';
 import {Field} from '~components/molecules';
 import spaces from '~constants/spaces';
 import {useNavigate} from '~hooks';
+import {onLogin} from '~redux/actions';
+import {ApplicationState} from '~redux/reducers';
 // import {Phrase} from '~components/atoms';
 import styleConfig from './styles';
 
@@ -25,13 +28,17 @@ const Login = ({}: LoginProps) => {
   });
   const [isOpenPassword, setIsOpenPassword] = useState(false);
 
+  const {authReducer} = useSelector((state: ApplicationState) => state);
+  console.log('authReducer', authReducer);
   const styles = styleConfig({});
   const navigation = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = () => {
     if (form.email == 'admin@gmail.com' && form.password == 'admin') {
       toast.show('Login berhasil');
       navigation.reset({index: 0, routes: [{name: 'Home'}]});
+      dispatch(onLogin());
     } else {
       toast.show('Login gagal', {type: 'danger'});
     }
