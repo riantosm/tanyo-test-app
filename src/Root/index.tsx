@@ -1,7 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
 import {useSelector} from 'react-redux';
-import MainRoute from '~Routes';
+import MainRoute from '~routes';
 
 const Root = () => {
   return (
