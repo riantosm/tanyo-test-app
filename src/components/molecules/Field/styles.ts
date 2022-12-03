@@ -17,6 +17,7 @@ const styleConfig = ({isDark}: {isDark?: boolean}) =>
       padding: 0,
       // borderWidth: 1,
       flex: 1,
+      color: colors.black100,
     },
   });
 

@@ -26,6 +26,7 @@ const Login = ({}: LoginProps) => {
     email: '',
     password: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
   const [isOpenPassword, setIsOpenPassword] = useState(false);
 
   const {authReducer} = useSelector((state: ApplicationState) => state);
@@ -34,13 +35,17 @@ const Login = ({}: LoginProps) => {
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    if (form.email == 'admin@gmail.com' && form.password == 'admin') {
-      toast.show('Login berhasil');
-      navigation.reset({index: 0, routes: [{name: 'Home'}]});
-      dispatch(onLogin());
-    } else {
-      toast.show('Login gagal', {type: 'danger'});
-    }
+    setIsLoading(true);
+    setTimeout(() => {
+      if (form.email == 'admin@gmail.com' && form.password == 'admin') {
+        toast.show('Login berhasil');
+        navigation.reset({index: 0, routes: [{name: 'Home'}]});
+        dispatch(onLogin());
+      } else {
+        toast.show('Login gagal', {type: 'danger'});
+      }
+      setIsLoading(false);
+    }, 500);
   };
 
   return (
@@ -78,7 +83,9 @@ const Login = ({}: LoginProps) => {
             }}
           />
           <Gap vertical={spaces.sm} />
-          <ButtonField onPress={handleSubmit}>Login</ButtonField>
+          <ButtonField onPress={handleSubmit} isLoading={isLoading}>
+            Login
+          </ButtonField>
         </View>
       </View>
     </ScrollView>

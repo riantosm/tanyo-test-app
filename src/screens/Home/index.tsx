@@ -1,6 +1,6 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, StatusBar, View} from 'react-native';
-import {Gap, Phrase} from '~components/atoms';
+import {Button, Gap, Phrase} from '~components/atoms';
 import styleConfig from './styles';
 import {
   Calendar,
@@ -14,6 +14,10 @@ import colors from '~constants/colors';
 import spaces from '~constants/spaces';
 import {dummyData} from '~assets/data/dummy';
 import {IDataDummy} from '~types/services';
+import PushNotification, {Importance} from 'react-native-push-notification';
+import {useDispatch} from 'react-redux';
+import {onLogout} from '~redux/actions';
+import {useNavigate} from '~hooks';
 
 const SCREEN_NAME = 'Home';
 
@@ -32,10 +36,55 @@ const Home = ({}: HomeProps) => {
   );
 
   const styles = styleConfig({});
+  const dispatch = useDispatch();
+  const navigation = useNavigate();
+
+  useEffect(() => {
+    PushNotification.createChannel(
+      {
+        channelId: 'channel-id', // (required)
+        channelName: 'My channel', // (required)
+        channelDescription: 'A channel to categorise your notifications', // (optional) default: undefined.
+        playSound: false, // (optional) default: true
+        soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+        importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
+        vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+      },
+      created => {
+        // console.log(`createChannel returned '${created}'`); // (optional) callback returns whether the channel was created, false means it already existed.
+      },
+    );
+  }, []);
+
+  useEffect(() => {
+    console.log('----');
+    PushNotification.cancelAllLocalNotifications();
+    dummyData.map(data => {
+      // PushNotification.cancelLocalNotification(`${data.id}`);
+      console.log('🚀', moment(data.timestamp).format('LLL'));
+      PushNotification.localNotificationSchedule({
+        date: new Date(data.timestamp + 2 * 1000),
+        title: 'Notification scheduled',
+        message: data.message,
+        channelId: 'channel-id',
+        messageId: `${data.id}`,
+      });
+    });
+  }, []);
+
+  const handleLogout = () => {
+    console.log('handleLogout');
+    PushNotification.cancelAllLocalNotifications();
+    dispatch(onLogout());
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Login'}],
+    });
+  };
 
   const ListRenderItem = useCallback(
     ({item, index}: {item: IDataDummy; index: number}) => (
-      <View style={{backgroundColor: colors.white, padding: spaces.s}}>
+      <View style={styles.wrapperList}>
         <Phrase>
           Jadwal:{' '}
           <Phrase type="content/bold">
@@ -55,35 +104,26 @@ const Home = ({}: HomeProps) => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={colors.white} barStyle="dark-content" />
+      <Gap
+        vertical={spaces.sm}
+        horizontal={spaces.sm}
+        style={{backgroundColor: colors.white}}>
+        <View style={styles.rowHeader}>
+          <Phrase type="title/bold">Tanyo Test</Phrase>
+          <Button onPress={handleLogout}>
+            <Phrase>Keluar</Phrase>
+          </Button>
+        </View>
+      </Gap>
+      <Gap vertical={spaces.xxl} />
       <Calendar
         initialDate={selectedDate}
         markedDates={{...markerDate}}
         onDayPress={day => {
           setSelectedDate(day.dateString);
         }}
-        theme={{
-          backgroundColor: '#ffffff',
-          calendarBackground: '#ffffff',
-          textSectionTitleColor: '#b6c1cd',
-          textSectionTitleDisabledColor: '#d9e1e8',
-          selectedDayBackgroundColor: '#00adf5',
-          selectedDayTextColor: '#ffffff',
-          todayTextColor: '#00adf5',
-          dayTextColor: '#2d4150',
-          textDisabledColor: '#d9e1e8',
-          dotColor: '#00adf5',
-          selectedDotColor: '#ffffff',
-          arrowColor: 'orange',
-          disabledArrowColor: '#d9e1e8',
-          monthTextColor: 'blue',
-          indicatorColor: 'blue',
-          textDayFontWeight: '300',
-          textMonthFontWeight: 'bold',
-          textDayHeaderFontWeight: '300',
-          textDayFontSize: 16,
-          textMonthFontSize: 16,
-          textDayHeaderFontSize: 16,
-        }}
+        // @ts-ignore
+        theme={styles.themeCalendar}
       />
       <Gap vertical={spaces.sm} horizontal={spaces.sm}>
         <Phrase>List Schedule</Phrase>
@@ -91,6 +131,7 @@ const Home = ({}: HomeProps) => {
       <FlatList
         listKey={'list-schedule'}
         contentContainerStyle={{marginHorizontal: spaces.s}}
+        style={{marginBottom: spaces.sm, flex: 1}}
         data={dummyData.filter(
           data => moment(data.timestamp).format('YYYY-MM-DD') === selectedDate,
         )}

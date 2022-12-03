@@ -11,4 +11,10 @@ export const onLogin = () => {
   };
 };
 
+export const onLogout = () => {
+  return async (dispatch: Dispatch<IAuthAction>) => {
+    dispatch({type: 'ON_LOGOUT'});
+  };
+};
+
 export type AuthAction = IAuthAction;

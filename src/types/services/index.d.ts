@@ -1,5 +1,5 @@
 export interface IDataDummy {
   id: number;
-  title: string;
+  message: string;
   timestamp: number;
 }

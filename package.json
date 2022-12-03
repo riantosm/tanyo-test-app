@@ -9,6 +9,7 @@
     "android-c": "cd android/ && ./gradlew clean && cd ../",
     "android-r": "cd android/ && ./gradlew assembleRelease && cd ../",
     "android-d": "cd android/ && ./gradlew assembleDebug && cd ../",
+    "android-c-d": "yarn android-c && cd android/ && ./gradlew assembleDebug && cd ../",
     "ios-pod": "cd ios/ && pod install && cd ../",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
@@ -24,6 +25,7 @@
     "react-native-calendars": "^1.1292.0",
     "react-native-gesture-handler": "^2.3.2",
     "react-native-paper": "^4.12.5",
+    "react-native-push-notification": "^8.1.1",
     "react-native-reanimated": "^2.13.0",
     "react-native-safe-area-context": "^4.4.1",
     "react-native-screens": "^3.18.2",
@@ -44,6 +46,7 @@
     "@types/jest": "^26.0.23",
     "@types/react": "^18.0.21",
     "@types/react-native": "^0.70.6",
+    "@types/react-native-push-notification": "^8.1.1",
     "@types/react-redux": "^7.1.16",
     "@types/react-test-renderer": "^18.0.0",
     "@types/redux-thunk": "^2.1.0",

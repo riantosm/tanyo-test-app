@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {TextInput, TextInputProps, View} from 'react-native';
 import {Button, Phrase} from '~components/atoms';
+import colors from '~constants/colors';
 import styleConfig from './styles';
 
 const SCREEN_NAME = 'Field';
@@ -24,6 +25,7 @@ const Field = ({textInputProps, staticLeft}: FieldProps) => {
         style={[styles.textInput]}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(true)}
+        placeholderTextColor={colors.grey1}
         {...textInputProps}
       />
       {!!staticLeft?.render ? (
