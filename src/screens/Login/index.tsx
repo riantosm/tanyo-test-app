@@ -29,7 +29,6 @@ const Login = ({}: LoginProps) => {
   const [isOpenPassword, setIsOpenPassword] = useState(false);
 
   const {authReducer} = useSelector((state: ApplicationState) => state);
-  console.log('authReducer', authReducer);
   const styles = styleConfig({});
   const navigation = useNavigate();
   const dispatch = useDispatch();
